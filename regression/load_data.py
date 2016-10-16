@@ -4,6 +4,7 @@ from numpy import *
 from collections import namedtuple
 from csv import *
 import csv
+import json
 
 
 def load_data(filename):
@@ -39,10 +40,21 @@ def stand_regression(data_array, label_array):
     return ws
 
 
+def lwl_regression(testpoint, data_array, label_array):
+    x_matrix = mat(data_array)
+    y_matrix = mat(label_array).T
+    m = shape(x_matrix)[0]
+    weights = mat(eye(m))
 
+
+def savefile(data):
+    with open(' std_re.json', 'w') as f:
+        json.dump(data, f)
 
 
 if __name__ == '__main__':
     data, label = load_data('houses-2016-10-13.csv')
-    u = stand_regression(data, label)
+    #u = stand_regression(data, label)
+    savefile(u.tolist())
+
     print u
