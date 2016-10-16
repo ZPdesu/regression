@@ -7,8 +7,8 @@ import csv
 
 
 def load_data(filename):
-    data_matrix = []
-    label_matrix = []
+    data_array = []
+    label_array = []
     col_types = [int, str, str, float, float, str, str, float, float, float, float, float, float, float, float, float]
     with open('houses-2016-10-13.csv') as f:
         f_csv = csv.reader(f)
@@ -18,11 +18,31 @@ def load_data(filename):
             line_array = list(row)
             line_array[2] = row[2].split('-')[0]
             line_array[5] = float(filter(str.isdigit, line_array[5]))
-            data_matrix.append(line_array[4:5])
-            data_matrix.append(line_array[7:15])
-            label_matrix.append(line_array[3])
-    return data_matrix, label_matrix
+            temp_array = []
+            temp_array.append(line_array[4])
+            temp_array.append(line_array[5])
+            for i in range (9):
+                temp_array.append(line_array[i+7])
+            data_array.append(temp_array)
+            label_array.append(line_array[3])
+    return data_array, label_array
+
+
+def stand_regression(data_array, label_array):
+    x_matrix = mat(data_array)
+    y_matrix = mat(label_array).T
+    xTx = x_matrix.T * x_matrix
+    if linalg.det(xTx) == 0.0:
+        print 'This matrix is singular, can not do inverse'
+        return
+    ws = xTx.I * (x_matrix.T * y_matrix)
+    return ws
+
+
+
 
 
 if __name__ == '__main__':
-    load_data('houses-2016-10-13.csv')
+    data, label = load_data('houses-2016-10-13.csv')
+    u = stand_regression(data, label)
+    print u
