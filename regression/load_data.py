@@ -18,16 +18,16 @@ def load_data(filename):
             line_array = list(row)
             line_array[2] = row[2].split('-')[0]
             line_array[5] = float(filter(str.isdigit, line_array[5]))
+            line_array[6] = float(line_array[6][0])
             temp_array = []
-            temp_array.append(line_array[4])
-            temp_array.append(line_array[5])
-            for i in range (9):
-                temp_array.append(line_array[i+7])
+            for i in range(12):
+                temp_array.append(line_array[i+4])
             data_array.append(temp_array)
             label_array.append(line_array[3])
     return data_array, label_array
 
 
+#linear regression
 def stand_regression(data_array, label_array):
     x_matrix = mat(data_array)
     y_matrix = mat(label_array).T
