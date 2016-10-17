@@ -6,7 +6,8 @@ def a():
     return 3
 
 if __name__ == '__main__':
-    a = matrix([[89,56],[23,56]])
-    b = a.tolist()
-    b[0][0] = 0
-    print eye(5)
+    a = array([[89,56,23,56]])
+    c= matrix([[78]])
+    b = matrix([[3,4,5,6],[2,3,5,7]])
+    b[0,3] = c
+    print exp(2.6)

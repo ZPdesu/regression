@@ -40,11 +40,23 @@ def stand_regression(data_array, label_array):
     return ws
 
 
-def lwl_regression(testpoint, data_array, label_array):
+#lwl regression
+def lwl_regression(testpoint, data_array, label_array, k = 0.5):
     x_matrix = mat(data_array)
     y_matrix = mat(label_array).T
     m = shape(x_matrix)[0]
     weights = mat(eye(m))
+    for j in range(m):
+        diff_matrix = testpoint - x_matrix[j, :]
+        #print diff_matrix
+        weights[j, j] = exp((diff_matrix * diff_matrix.T / (-2.0 * k ** 2)))
+        print exp((diff_matrix * diff_matrix.T/ (-2.0 * k ** 2))[0,0])
+    xTx = x_matrix.T * (weights * x_matrix)
+    if linalg.det(xTx) == 0.0:
+        print 'This matrix is singular, can not do inverse'
+        return
+    ws = xTx.I * (x_matrix.T * (weights * y_matrix))
+    return testpoint * ws
 
 
 def savefile(data):
@@ -54,7 +66,11 @@ def savefile(data):
 
 if __name__ == '__main__':
     data, label = load_data('houses-2016-10-13.csv')
-    #u = stand_regression(data, label)
-    savefile(u.tolist())
+    # linear regression
+    #a = stand_regression(data, label)
+    #savefile(a.tolist())
 
-    print u
+    #lwl regression
+    b = lwl_regression(data[8], data, label, k = 1000)
+
+    print b
