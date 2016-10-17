@@ -9,5 +9,5 @@ if __name__ == '__main__':
     a = array([[89,56,23,56]])
     c= matrix([[78]])
     b = matrix([[3,4,5,6],[2,3,5,7]])
-    b[0,3] = c
-    print exp(1-4)
+
+    print 1

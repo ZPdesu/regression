@@ -40,6 +40,9 @@ def normalization(data_array, label_array):
     return x_matrix, y_matrix
 
 
+def rss_error(y_array, y_hatarray):
+    return ((y_array - y_hatarray) ** 2).sum()
+
 
 #linear regression
 def stand_regression(data_array, label_array):
@@ -92,7 +95,31 @@ def ridge_test(data_array, label_array):
     return ws_matrix
 
 
-#def stage_wise()
+def stage_wise(data_array, label_array, num_it=100):
+    x_matrix, y_matrix = normalization(data_array, label_array)
+    m, n = shape(x_matrix)
+    return_matrix = zeros((num_it, n))
+    ws = zeros((n, 1))
+    ws_test = ws.copy()
+    ws_max = ws.copy()
+    eps = 1e-6
+    for i in range(num_it):
+        print ws.T
+        lowest_error = inf
+        for j in range(n):
+            for sign in [-1, 1]:
+                ws_test = ws.copy()
+                ws_test[j] += eps * sign
+                y_test = x_matrix * ws_test
+                rssE = rss_error(y_matrix.A, y_test.A)
+                if rssE < lowest_error:
+                    lowest_error = rssE
+                    ws_max = ws_test
+            ws = ws_max.copy()
+            return_matrix[i, :] = ws.T
+        return return_matrix
+
+
 
 
 def savefile(data):
