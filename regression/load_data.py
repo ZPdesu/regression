@@ -3,6 +3,7 @@
 from numpy import *
 from collections import namedtuple
 from csv import *
+import matplotlib.pyplot as plt
 import csv
 import json
 
@@ -28,6 +29,18 @@ def load_data(filename):
     return data_array, label_array
 
 
+def normalization(data_array, label_array):
+    x_matrix = mat(data_array)
+    y_matrix = mat(label_array).T
+    y_mean = mean(y_matrix, 0)
+    y_matrix = y_matrix - y_mean
+    x_mean = mean(x_matrix, 0)
+    x_var = var(x_matrix, 0)
+    x_matrix = (x_matrix - x_mean) / x_var
+    return x_matrix, y_matrix
+
+
+
 #linear regression
 def stand_regression(data_array, label_array):
     x_matrix = mat(data_array)
@@ -48,15 +61,38 @@ def lwl_regression(testpoint, data_array, label_array, k = 0.5):
     weights = mat(eye(m))
     for j in range(m):
         diff_matrix = testpoint - x_matrix[j, :]
-        #print diff_matrix
         weights[j, j] = exp((diff_matrix * diff_matrix.T / (-2.0 * k ** 2)))
-        print exp((diff_matrix * diff_matrix.T/ (-2.0 * k ** 2))[0,0])
     xTx = x_matrix.T * (weights * x_matrix)
     if linalg.det(xTx) == 0.0:
         print 'This matrix is singular, can not do inverse'
         return
     ws = xTx.I * (x_matrix.T * (weights * y_matrix))
     return testpoint * ws
+
+
+#ridge_regression
+def ridge_regression(x_matrix, y_matrix, lam=0.2):
+    xTx = x_matrix.T * x_matrix
+    denom = xTx + eye(shape(x_matrix)[1]) * lam
+    if linalg.det(denom) == 0.0:
+        print 'This matrix is singular, can not do inverse'
+        return
+    ws = denom.I * (x_matrix.T * y_matrix)
+    return ws
+
+
+def ridge_test(data_array, label_array):
+    x_matrix, y_matrix = normalization(data_array, label_array)
+    num_testpts = 30
+    ws_matrix = zeros((num_testpts, shape(x_matrix)[1]))
+    for i in range(num_testpts):
+        ws = ridge_regression(x_matrix, y_matrix, exp(i-10))
+        ws_matrix[i, :] = ws.T
+        print ws.T
+    return ws_matrix
+
+
+#def stage_wise()
 
 
 def savefile(data):
@@ -70,7 +106,16 @@ if __name__ == '__main__':
     #a = stand_regression(data, label)
     #savefile(a.tolist())
 
-    #lwl regression
-    b = lwl_regression(data[8], data, label, k = 1000)
+    # lwl regression
+    #b = lwl_regression(data[3], data, label, k = 100)
 
-    print b
+    # ridge_regression
+    '''
+    ridge_weights = ridge_test(data, label)
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.plot(ridge_weights)
+    plt.show()
+    '''
+
+    print 1

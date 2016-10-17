@@ -10,4 +10,4 @@ if __name__ == '__main__':
     c= matrix([[78]])
     b = matrix([[3,4,5,6],[2,3,5,7]])
     b[0,3] = c
-    print exp(2.6)
+    print exp(1-4)
