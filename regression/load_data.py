@@ -179,8 +179,8 @@ def savefile(data):
 if __name__ == '__main__':
     data, label = load_data('houses-2016-10-13.csv')
     # linear regression
-    #a = stand_regression(data, label)
-    #savefile(a.tolist())
+    a = stand_regression(data, label)
+    savefile(a.tolist())
 
     # lwl regression
     #b = lwl_regression(data[3], data, label, k = 100)
