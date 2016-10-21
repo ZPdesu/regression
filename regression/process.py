@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 def a():
     return 3
 
+
 if __name__ == '__main__':
     o = []
     a = array([[89,56,23,56],[89,56,23,56]])
