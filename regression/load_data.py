@@ -53,7 +53,14 @@ def stand_regression(data_array, label_array):
         print 'This matrix is singular, can not do inverse'
         return
     ws = xTx.I * (x_matrix.T * y_matrix)
+    var_y = var(y_matrix, 0)
+    mean_y = mean(y_matrix, 0)
+    z = x_matrix * ws * var_y[0,0] + mean_y[0,0]
+    accuracy = (map(abs, array(z - array(label_array))))[0] / array(label_array)
+    avg_accuracy = sum(accuracy, axis=0) / 2712.0
+    print avg_accuracy
     print ws
+    print type(var_y)
     return ws
 
 
@@ -152,13 +159,31 @@ def cross_validation(data_array, label_array, numval =10):
     lam = list(mean_errors).index(min_mean)
     x_matrix, y_matrix = normalization(data_array, label_array)
     best_weights = ridge_regression(x_matrix, y_matrix, lam)
-    print best_weights
+    #print best_weights
     x_mat = mat(data_array); y_mat = mat(label_array).T
     var_x = var(x_mat, 0); var_y = var(y_mat, 0)
     mean_x = mean(x_mat, 0); mean_y = mean(y_mat, 0)
     un_reg = best_weights * var_y / var_x.T
-    print 'the best model from ridge regression is :\n', un_reg
-    print 'with constant term:', -1 * sum(multiply(mean_x, un_reg)) + mean_y
+    cons = -1 * sum(mean_x / var_x.T)* var_y + mean_y
+    #print 'the best model from ridge regression is :\n', un_reg
+    print 'with constant term:', best_weights
+
+    prediction = x_matrix * best_weights * var_y + mean_y
+    print shape(prediction)
+    print shape(array(prediction))
+    z= 0
+    for i in range (2712):
+        z += abs(prediction[i,0] - label_array[i])/label_array[i]
+
+    print z / 2712.0
+    list(prediction)
+    print type(prediction)
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.plot(prediction)
+    ax.plot(label_array)
+    plt.show()
 
 
 
@@ -179,8 +204,8 @@ def savefile(data):
 if __name__ == '__main__':
     data, label = load_data('houses-2016-10-13.csv')
     # linear regression
-    a = stand_regression(data, label)
-    savefile(a.tolist())
+    #a = stand_regression(data, label)
+    #savefile(a.tolist())
 
     # lwl regression
     #b = lwl_regression(data[3], data, label, k = 100)
